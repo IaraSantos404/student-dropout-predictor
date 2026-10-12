@@ -96,7 +96,7 @@ CENARIOS = {
   'C': CENARIO_C,
 }
 
-def carregar_dados(caminho: str, cenario: str):
+def carregar_dados(caminho='data.csv', cenario='A'):
   df = pd.read_csv(caminho, sep=';')
   df.columns = df.columns.str.strip()
   # x = todas as colunas de todos os cenários, y = coluna target - oq o modelo precisa prever
@@ -106,3 +106,4 @@ def carregar_dados(caminho: str, cenario: str):
 
 def separar_treino_teste(x, y, seed=42):
   return train_test_split(x, y, test_size=0.2, stratify=y, random_state=seed)
+

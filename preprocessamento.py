@@ -2,23 +2,52 @@
 import numpy as np
 import pandas as pd
 
+# esse arquivo tem q implementar as funções de normalização
+# one hot para variáveis nominais, etc
+# para impedir vazamento de infromação, o ajuste deve ser feito apenas com os dados de treino
+# por isso a separação entre funções de fit (só pra treino) e transform (treino e teste)
 
-# parte do one hot encoding para dá um jeito nas nominais
-def codificar(x, mapa_de_tipos):
-  partes = []
+def codificar_fit(x, mapa_de_tipos, freq_min = 0.01):
+  params = {}
   for coluna in x.columns:
-    if mapa_de_tipos[coluna] == 'nominal':
-      # converte variaveis categoricas em variaveis dummy (0 ou 1)
-      dummies = pd.get_dummies(x[coluna], prefix=coluna)
-      partes.append(dummies)
-    elif mapa_de_tipos[coluna] == 'ordinal':
-      partes.append(x[[coluna]])
-    elif mapa_de_tipos[coluna] == 'continuo':
-      partes.append(x[[coluna]])
+    tipo = mapa_de_tipos[coluna]
+    if tipo != 'nominal':
+      params[coluna] = {'tipo': tipo}
+      continue
 
-  # axis = 1 para junção horizontal pelas colunas
-  return pd.concat(partes, axis=1).astype(float)
+    valores = sorted(x[coluna].unique())
+    if len(valores) <= 2:
+      params[coluna] = {'tipo': 'binaria', 'positivo': valores[-1]}
+      continue
 
+    freq = x[coluna].value_counts(normalize=True)
+    mantidas = sorted(freq[freq >= freq_min].index.tolist())
+    params[coluna] = {'tipo': 'nominal', 'categorias': mantidas, 'tem_outros': bool((freq < freq_min).any())}
+
+  return params
+
+def codificar_transform(x, params):
+  partes = []
+  for coluna, info in params.items():
+    serie = x[coluna]
+
+    if info['tipo'] in ['ordinal', 'continuo']:
+      partes.append(serie.astype(float).to_frame(coluna))
+
+    elif info['tipo'] == 'binaria':
+      partes.append((serie == info['positivo']).astype(float).to_frame(coluna))
+
+    else:
+      cols = {}
+      for cat in info['categorias']:
+        cols[f'{coluna}_{cat}'] = (serie == cat).astype(float)
+      if info['tem_outros']:
+        cols[f'{coluna}_outros'] = (serie.isin(info['categorias']) == False).astype(float)
+        partes.append(pd.DataFrame(cols, index=x.index))
+
+  return pd.concat(partes, axis=1)
+  
+# NORMALIZACAO  
 # (x - min) / (max - min)
 def min_max_fit(x):
   x = np.array(x, dtype=float)
@@ -61,3 +90,15 @@ def normalizar(x_treino, x_teste, metodo):
     raise ValueError("metodo deve ser 'minmax' ou 'zscore'")
   
   return x_treino_norm, x_teste_norm, params
+
+def preparar(x_treino, x_val, mapa_de_tipos, metodo=None, freq_min=0.01):
+  params_cod = codificar_fit(x_treino, mapa_de_tipos, freq_min)
+  xt = codificar_transform(x_treino, params_cod)
+  xv = codificar_transform(x_val, params_cod)
+  nomes = list(xt.columns)
+
+  if metodo is None:
+    return xt.values.astype(float), xv.values.astype(float), nomes
+
+  xt_n, xv_n, _ = normalizar(xt.values, xv.values, metodo)
+  return xt_n, xv_n, nomes
