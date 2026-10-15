@@ -9,7 +9,7 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 # AJUSTE o nome do módulo abaixo para o arquivo onde estão carregar_dados,
 # separar_treino_teste e MAPA_DE_TIPOS.
 from dados import carregar_dados, separar_treino_teste, MAPA_DE_TIPOS
-from caracteristicas import pca_ajustar, pca_projetar, cargas_componentes
+from pca import pca_ajustar, pca_projetar, cargas_componentes
  
 # Configuração
 SEED = 42
