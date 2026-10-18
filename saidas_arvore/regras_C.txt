@@ -1,0 +1,32 @@
+[Curricular units 2nd sem (approved) <= 4.5] n=3539
+   [Curricular units 2nd sem (approved) <= 1.5] n=1500
+      [Course_171 <= 0.5] n=792
+         --> Dropout (n=644, impureza=0.151)
+         --> Graduate (n=148, impureza=0.612)
+      [Tuition fees up to date <= 0.5] n=708
+         --> Dropout (n=111, impureza=0.209)
+         --> Enrolled (n=597, impureza=0.642)
+   [Tuition fees up to date <= 0.5] n=2039
+      [GDP <= 1.905] n=84
+         --> Dropout (n=49, impureza=0.348)
+         --> Enrolled (n=35, impureza=0.625)
+      [Curricular units 1st sem (evaluations) <= 8.5] n=1955
+         --> Graduate (n=1285, impureza=0.247)
+         --> Graduate (n=670, impureza=0.510)
+
+R1: SE Curricular units 2nd sem (approved) > 4.5 E Tuition fees up to date > 0.5 E Curricular units 1st sem (evaluations) <= 8.5
+     ENTAO Graduate [cobertura=36.3%, confianca=86.2%, n=1285]
+R2: SE Curricular units 2nd sem (approved) > 4.5 E Tuition fees up to date > 0.5 E Curricular units 1st sem (evaluations) > 8.5
+     ENTAO Graduate [cobertura=18.9%, confianca=64.8%, n=670]
+R3: SE Curricular units 2nd sem (approved) <= 4.5 E Curricular units 2nd sem (approved) <= 1.5 E Course_171 <= 0.5
+     ENTAO Dropout [cobertura=18.2%, confianca=91.8%, n=644]
+R4: SE Curricular units 2nd sem (approved) <= 4.5 E Curricular units 2nd sem (approved) > 1.5 E Tuition fees up to date > 0.5
+     ENTAO Enrolled [cobertura=16.9%, confianca=45.4%, n=597]
+R5: SE Curricular units 2nd sem (approved) <= 4.5 E Curricular units 2nd sem (approved) <= 1.5 E Course_171 > 0.5
+     ENTAO Graduate [cobertura=4.2%, confianca=43.2%, n=148]
+R6: SE Curricular units 2nd sem (approved) <= 4.5 E Curricular units 2nd sem (approved) > 1.5 E Tuition fees up to date <= 0.5
+     ENTAO Dropout [cobertura=3.1%, confianca=88.3%, n=111]
+R7: SE Curricular units 2nd sem (approved) > 4.5 E Tuition fees up to date <= 0.5 E GDP <= 1.905
+     ENTAO Dropout [cobertura=1.4%, confianca=77.6%, n=49]
+R8: SE Curricular units 2nd sem (approved) > 4.5 E Tuition fees up to date <= 0.5 E GDP > 1.905
+     ENTAO Enrolled [cobertura=1.0%, confianca=48.6%, n=35]

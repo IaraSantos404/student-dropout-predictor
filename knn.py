@@ -10,10 +10,12 @@ def distancia(A, q, metrica="euclidiana", p=3):
     return np.max(np.abs(A - q), axis=1)
   if metrica == "minkowski":
     return np.sum(np.abs(A - q)**p, axis=1)**(1.0/p)
-  # if metrica == "cosseno":
-  #   numerador =""
-  #   denominador =""
-  #   return 1.0 - numerador / denominador
+  if metrica == "cosseno":
+    norma_A = np.sqrt(np.sum(A**2, axis=1))
+    norma_q = np.sqrt(np.sum(q**2))
+    similaridade = (A @ q) / (norma_A * norma_q + 1e-10)
+    return 1.0 - similaridade  
+
 
   raise ValueError(f"metrica desconhecida: {metrica}")
 
@@ -99,3 +101,4 @@ def relatorio_metricas(M):
   "f1_macro": np.mean(f1),
   "acuracia_balanceada": np.mean(revocacao),
   }
+

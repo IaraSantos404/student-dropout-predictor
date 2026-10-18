@@ -1,0 +1,7 @@
+atributo,subgrupo,n_amostras,taxa_erro,acuracia,f1_macro
+Gender,Feminino,570,0.2175,0.7825,0.7077
+Gender,Masculino,315,0.2857,0.7143,0.6498
+Scholarship holder,Não Bolsista,680,0.2588,0.7412,0.6895
+Scholarship holder,Bolsista,205,0.1854,0.8146,0.6098
+Debtor,Sem Débito,771,0.2387,0.7613,0.6868
+Debtor,Devedor,114,0.2632,0.7368,0.6675

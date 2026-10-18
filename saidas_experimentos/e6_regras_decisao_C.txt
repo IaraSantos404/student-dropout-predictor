@@ -1,0 +1,46 @@
+|--- taxa_aprovacao_2sem <= 0.77
+|   |--- taxa_aprovacao_2sem <= 0.23
+|   |   |--- Curricular units 2nd sem (enrolled) <= 0.02
+|   |   |   |--- Admission grade <= 0.43
+|   |   |   |   |--- truncated branch of depth 3
+|   |   |   |--- Admission grade >  0.43
+|   |   |   |   |--- truncated branch of depth 3
+|   |   |--- Curricular units 2nd sem (enrolled) >  0.02
+|   |   |   |--- taxa_aprovacao_2sem <= 0.15
+|   |   |   |   |--- truncated branch of depth 3
+|   |   |   |--- taxa_aprovacao_2sem >  0.15
+|   |   |   |   |--- truncated branch of depth 3
+|   |--- taxa_aprovacao_2sem >  0.23
+|   |   |--- Tuition fees up to date <= 0.50
+|   |   |   |--- GDP <= 0.77
+|   |   |   |   |--- truncated branch of depth 3
+|   |   |   |--- GDP >  0.77
+|   |   |   |   |--- truncated branch of depth 3
+|   |   |--- Tuition fees up to date >  0.50
+|   |   |   |--- taxa_aprovacao_1sem <= 0.85
+|   |   |   |   |--- truncated branch of depth 3
+|   |   |   |--- taxa_aprovacao_1sem >  0.85
+|   |   |   |   |--- truncated branch of depth 3
+|--- taxa_aprovacao_2sem >  0.77
+|   |--- taxa_aprovacao_2sem <= 0.86
+|   |   |--- Tuition fees up to date <= 0.50
+|   |   |   |--- GDP <= 0.79
+|   |   |   |   |--- truncated branch of depth 2
+|   |   |   |--- GDP >  0.79
+|   |   |   |   |--- truncated branch of depth 2
+|   |   |--- Tuition fees up to date >  0.50
+|   |   |   |--- evolucao_aprovacao <= 0.61
+|   |   |   |   |--- truncated branch of depth 3
+|   |   |   |--- evolucao_aprovacao >  0.61
+|   |   |   |   |--- truncated branch of depth 3
+|   |--- taxa_aprovacao_2sem >  0.86
+|   |   |--- Tuition fees up to date <= 0.50
+|   |   |   |--- delta_nota_ingresso <= 0.49
+|   |   |   |   |--- truncated branch of depth 3
+|   |   |   |--- delta_nota_ingresso >  0.49
+|   |   |   |   |--- truncated branch of depth 3
+|   |   |--- Tuition fees up to date >  0.50
+|   |   |   |--- taxa_aprovacao_1sem <= 0.83
+|   |   |   |   |--- truncated branch of depth 3
+|   |   |   |--- taxa_aprovacao_1sem >  0.83
+|   |   |   |   |--- truncated branch of depth 3
