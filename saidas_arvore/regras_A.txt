@@ -1,0 +1,32 @@
+[Tuition fees up to date <= 0.5] n=3539
+   [GDP <= 1.905] n=419
+      [Previous qualification (grade) <= 144.5] n=329
+         --> Dropout (n=296, impureza=0.085)
+         --> Dropout (n=33, impureza=0.367)
+      [Debtor <= 0.5] n=90
+         --> Enrolled (n=34, impureza=0.623)
+         --> Dropout (n=56, impureza=0.344)
+   [Scholarship holder <= 0.5] n=3120
+      [Age at enrollment <= 21.5] n=2264
+         --> Graduate (n=1440, impureza=0.600)
+         --> Dropout (n=824, impureza=0.637)
+      [Unemployment rate <= 8.25] n=856
+         --> Graduate (n=46, impureza=0.632)
+         --> Graduate (n=810, impureza=0.337)
+
+R1: SE Tuition fees up to date > 0.5 E Scholarship holder <= 0.5 E Age at enrollment <= 21.5
+     ENTAO Graduate [cobertura=40.7%, confianca=54.4%, n=1440]
+R2: SE Tuition fees up to date > 0.5 E Scholarship holder <= 0.5 E Age at enrollment > 21.5
+     ENTAO Dropout [cobertura=23.3%, confianca=44.3%, n=824]
+R3: SE Tuition fees up to date > 0.5 E Scholarship holder > 0.5 E Unemployment rate > 8.25
+     ENTAO Graduate [cobertura=22.9%, confianca=80.2%, n=810]
+R4: SE Tuition fees up to date <= 0.5 E GDP <= 1.905 E Previous qualification (grade) <= 144.5
+     ENTAO Dropout [cobertura=8.4%, confianca=95.6%, n=296]
+R5: SE Tuition fees up to date <= 0.5 E GDP > 1.905 E Debtor > 0.5
+     ENTAO Dropout [cobertura=1.6%, confianca=78.6%, n=56]
+R6: SE Tuition fees up to date > 0.5 E Scholarship holder > 0.5 E Unemployment rate <= 8.25
+     ENTAO Graduate [cobertura=1.3%, confianca=45.7%, n=46]
+R7: SE Tuition fees up to date <= 0.5 E GDP > 1.905 E Debtor <= 0.5
+     ENTAO Enrolled [cobertura=1.0%, confianca=47.1%, n=34]
+R8: SE Tuition fees up to date <= 0.5 E GDP <= 1.905 E Previous qualification (grade) > 144.5
+     ENTAO Dropout [cobertura=0.9%, confianca=75.8%, n=33]

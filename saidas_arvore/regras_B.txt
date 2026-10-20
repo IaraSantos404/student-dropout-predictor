@@ -1,0 +1,32 @@
+[Curricular units 1st sem (approved) <= 4.5] n=3539
+   [Tuition fees up to date <= 0.5] n=1369
+      [GDP <= 2.765] n=308
+         --> Dropout (n=273, impureza=0.064)
+         --> Dropout (n=35, impureza=0.320)
+      [Curricular units 1st sem (approved) <= 2.5] n=1061
+         --> Dropout (n=587, impureza=0.466)
+         --> Enrolled (n=474, impureza=0.663)
+   [Tuition fees up to date <= 0.5] n=2170
+      [GDP <= 1.905] n=111
+         --> Dropout (n=68, impureza=0.319)
+         --> Enrolled (n=43, impureza=0.622)
+      [Curricular units 1st sem (evaluations) <= 8.5] n=2059
+         --> Graduate (n=1366, impureza=0.310)
+         --> Graduate (n=693, impureza=0.549)
+
+R1: SE Curricular units 1st sem (approved) > 4.5 E Tuition fees up to date > 0.5 E Curricular units 1st sem (evaluations) <= 8.5
+     ENTAO Graduate [cobertura=38.6%, confianca=82.1%, n=1366]
+R2: SE Curricular units 1st sem (approved) > 4.5 E Tuition fees up to date > 0.5 E Curricular units 1st sem (evaluations) > 8.5
+     ENTAO Graduate [cobertura=19.6%, confianca=60.6%, n=693]
+R3: SE Curricular units 1st sem (approved) <= 4.5 E Tuition fees up to date > 0.5 E Curricular units 1st sem (approved) <= 2.5
+     ENTAO Dropout [cobertura=16.6%, confianca=69.7%, n=587]
+R4: SE Curricular units 1st sem (approved) <= 4.5 E Tuition fees up to date > 0.5 E Curricular units 1st sem (approved) > 2.5
+     ENTAO Enrolled [cobertura=13.4%, confianca=37.3%, n=474]
+R5: SE Curricular units 1st sem (approved) <= 4.5 E Tuition fees up to date <= 0.5 E GDP <= 2.765
+     ENTAO Dropout [cobertura=7.7%, confianca=96.7%, n=273]
+R6: SE Curricular units 1st sem (approved) > 4.5 E Tuition fees up to date <= 0.5 E GDP <= 1.905
+     ENTAO Dropout [cobertura=1.9%, confianca=80.9%, n=68]
+R7: SE Curricular units 1st sem (approved) > 4.5 E Tuition fees up to date <= 0.5 E GDP > 1.905
+     ENTAO Enrolled [cobertura=1.2%, confianca=44.2%, n=43]
+R8: SE Curricular units 1st sem (approved) <= 4.5 E Tuition fees up to date <= 0.5 E GDP > 2.765
+     ENTAO Dropout [cobertura=1.0%, confianca=80.0%, n=35]

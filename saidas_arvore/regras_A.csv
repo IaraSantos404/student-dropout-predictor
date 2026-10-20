@@ -1,0 +1,9 @@
+regra,classe,n,cobertura,confianca
+Tuition fees up to date > 0.5 E Scholarship holder <= 0.5 E Age at enrollment <= 21.5,Graduate,1440,0.4069,0.5444
+Tuition fees up to date > 0.5 E Scholarship holder <= 0.5 E Age at enrollment > 21.5,Dropout,824,0.2328,0.443
+Tuition fees up to date > 0.5 E Scholarship holder > 0.5 E Unemployment rate > 8.25,Graduate,810,0.2289,0.8025
+Tuition fees up to date <= 0.5 E GDP <= 1.905 E Previous qualification (grade) <= 144.5,Dropout,296,0.0836,0.9561
+Tuition fees up to date <= 0.5 E GDP > 1.905 E Debtor > 0.5,Dropout,56,0.0158,0.7857
+Tuition fees up to date > 0.5 E Scholarship holder > 0.5 E Unemployment rate <= 8.25,Graduate,46,0.013,0.4565
+Tuition fees up to date <= 0.5 E GDP > 1.905 E Debtor <= 0.5,Enrolled,34,0.0096,0.4706
+Tuition fees up to date <= 0.5 E GDP <= 1.905 E Previous qualification (grade) > 144.5,Dropout,33,0.0093,0.7576

@@ -1,0 +1,9 @@
+regra,classe,n,cobertura,confianca
+Curricular units 1st sem (approved) > 4.5 E Tuition fees up to date > 0.5 E Curricular units 1st sem (evaluations) <= 8.5,Graduate,1366,0.386,0.8206
+Curricular units 1st sem (approved) > 4.5 E Tuition fees up to date > 0.5 E Curricular units 1st sem (evaluations) > 8.5,Graduate,693,0.1958,0.6061
+Curricular units 1st sem (approved) <= 4.5 E Tuition fees up to date > 0.5 E Curricular units 1st sem (approved) <= 2.5,Dropout,587,0.1659,0.6968
+Curricular units 1st sem (approved) <= 4.5 E Tuition fees up to date > 0.5 E Curricular units 1st sem (approved) > 2.5,Enrolled,474,0.1339,0.3734
+Curricular units 1st sem (approved) <= 4.5 E Tuition fees up to date <= 0.5 E GDP <= 2.765,Dropout,273,0.0771,0.967
+Curricular units 1st sem (approved) > 4.5 E Tuition fees up to date <= 0.5 E GDP <= 1.905,Dropout,68,0.0192,0.8088
+Curricular units 1st sem (approved) > 4.5 E Tuition fees up to date <= 0.5 E GDP > 1.905,Enrolled,43,0.0122,0.4419
+Curricular units 1st sem (approved) <= 4.5 E Tuition fees up to date <= 0.5 E GDP > 2.765,Dropout,35,0.0099,0.8

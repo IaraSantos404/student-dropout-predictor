@@ -1,0 +1,2 @@
+modelo,tempo_treino_ms,tempo_predicao_1000_ms
+arvore (prof_max=8),803.59,1.16
