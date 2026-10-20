@@ -1,0 +1,6 @@
+metrica,k_otimo,acuracia_media,acuracia_desvio
+euclidiana,15,0.6544,0.0187
+manhattan,23,0.6646,0.0221
+cosseno,19,0.6428,0.0187
+chebyshev,45,0.5001,0.0035
+minkowski,15,0.6536,0.0229

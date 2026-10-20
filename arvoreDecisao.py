@@ -311,3 +311,26 @@ def imprimir_arvore(no, nomes_atributos=None, nomes_classes=None, recuo=""):
     texto += imprimir_arvore(no.esq, nomes_atributos, nomes_classes, recuo + "   ")
     texto += imprimir_arvore(no.dir, nomes_atributos, nomes_classes, recuo + "   ")
     return texto
+
+
+class ArvoreDecisao:
+
+    def __init__(self, criterio="gini", prof_max=5, min_folha=5):
+        self.criterio = criterio
+        self.prof_max = prof_max
+        self.min_folha = min_folha
+        self.raiz = None
+
+    def fit(self, X, y):
+        self.raiz = induzir_arvore(
+            X, y,
+            criterio=self.criterio,
+            prof_max=self.prof_max,
+            min_folha=self.min_folha
+        )
+        return self
+
+    def predict(self, X, prof_corte=None):
+        if self.raiz is None:
+            raise ValueError("O modelo precisa ser ajustado com fit(X, y) antes de realizar previsões.")
+        return prever_arvore(self.raiz, X, prof_corte=prof_corte)

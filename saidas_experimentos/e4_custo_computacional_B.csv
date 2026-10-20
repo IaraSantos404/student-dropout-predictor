@@ -1,0 +1,4 @@
+Modelo,Paradigma,Dimensao,Treino (ms),Predição 1.000 inst. (ms)
+Árvore de Decisão,Ansioso (Eager),86,1892.4467000178993,1.6333999810740352
+k-NN (Original),Preguiçoso (Lazy),86,0.08060003165155649,3849.5331999729387
+k-NN (com PCA d=10),Preguiçoso (Lazy),10,0.07299997378140688,201.27820002380759

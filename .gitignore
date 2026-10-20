@@ -2,3 +2,4 @@ referencia/
 .venv/
 __pycache__/
 prePrcessamentoTeste.py
+data.csv

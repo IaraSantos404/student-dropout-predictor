@@ -19,7 +19,7 @@ from sklearn.model_selection import StratifiedKFold, RepeatedStratifiedKFold
 
 from dados import carregar_dados, separar_treino_teste, MAPA_DE_TIPOS
 from preprocessamento import preparar, construir_atributos
-from knn import KNN
+from knn import KNN, distancia
 
 # demora para achar k ótimo então seguem as métricas aqui:
 # cenário C:
@@ -48,14 +48,14 @@ CORES_METRICAS = {
     'minkowski': '#993399',
 }
 
-def executar_experimento_e3():
+def executar_experimento_e3(cenario=CENARIO):
     print("=" * 76)
-    print(f"EXPERIMENTO E3: MEDIDAS DE DISTÂNCIA NO k-NN (CENÁRIO {CENARIO})")
+    print(f"EXPERIMENTO E3: MEDIDAS DE DISTÂNCIA NO k-NN (CENÁRIO {cenario})")
     print("=" * 76)
 
     # 1. Carregamento dos dados
     caminho_csv = str(DIRETORIO_RAIZ / "data.csv")
-    X, y = carregar_dados(caminho_csv, cenario=CENARIO)
+    X, y = carregar_dados(caminho_csv, cenario=cenario)
     classes, y_numerico = np.unique(y, return_inverse=True)
 
     X_treino, X_teste, y_treino, y_teste = separar_treino_teste(
@@ -77,34 +77,44 @@ def executar_experimento_e3():
 
     historico_metricas = {}
     melhores_k = {}
+    max_k = max(valores_k)
 
     for metrica in METRICAS_TESTADAS:
         print(f"\n-> Avaliando métrica: {metrica.upper()}...")
-        medias_k = []
-        desvios_k = []
+        scores_k_map = {k: [] for k in valores_k}
 
-        for k in valores_k:
-            scores_k = []
+        for tr_idx, val_idx in skf.split(X_treino, y_treino):
+            X_tr_f = X_treino.iloc[tr_idx]
+            X_val_f = X_treino.iloc[val_idx]
+            y_tr_f = y_treino[tr_idx]
+            y_val_f = y_treino[val_idx]
 
-            for tr_idx, val_idx in skf.split(X_treino, y_treino):
-                X_tr_f = X_treino.iloc[tr_idx]
-                X_val_f = X_treino.iloc[val_idx]
-                y_tr_f = y_treino[tr_idx]
-                y_val_f = y_treino[val_idx]
+            # Normalização Min-Max sem vazamento
+            Xtr_norm, Xval_norm, _ = preparar(X_tr_f, X_val_f, mapa_tipos, metodo='minmax')
 
-                # Normalização Min-Max sem vazamento
-                Xtr_norm, Xval_norm, _ = preparar(X_tr_f, X_val_f, mapa_tipos, metodo='minmax')
+            knn_base = KNN(k=max_k, metrica=metrica, ponderado=True)
+            knn_base.fit(Xtr_norm, y_tr_f)
 
-                modelo = KNN(k=k, metrica=metrica, ponderado=True)
-                modelo.fit(Xtr_norm, y_tr_f)
-                y_pred = modelo.predict(Xval_norm)
+            preds_por_k = {k: [] for k in valores_k}
+            for q in Xval_norm:
+                d = distancia(knn_base.x_treino, q, knn_base.metrica, knn_base.p, knn_base._norma_treino)
+                viz_max = np.argsort(d)[:max_k]
+                pesos_max = 1.0 / (d[viz_max] + 1e-10)
 
-                scores_k.append(np.mean(y_pred == y_val_f))
+                for k in valores_k:
+                    viz_k = viz_max[:k]
+                    pesos_k = pesos_max[:k]
+                    votos = np.zeros(len(knn_base.classes))
+                    for i_c, classe in enumerate(knn_base.classes):
+                        votos[i_c] = np.sum(pesos_k[knn_base.y_treino[viz_k] == classe])
+                    preds_por_k[k].append(knn_base.classes[np.argmax(votos)])
 
-            med = np.mean(scores_k)
-            std = np.std(scores_k)
-            medias_k.append(med)
-            desvios_k.append(std)
+            for k in valores_k:
+                acc_k = np.mean(np.array(preds_por_k[k]) == y_val_f)
+                scores_k_map[k].append(acc_k)
+
+        medias_k = [np.mean(scores_k_map[k]) for k in valores_k]
+        desvios_k = [np.std(scores_k_map[k]) for k in valores_k]
 
         historico_metricas[metrica] = {
             'medias': medias_k,
@@ -138,13 +148,13 @@ def executar_experimento_e3():
 
     ax.set_xlabel('Valor de k (Número de Vizinhos)')
     ax.set_ylabel('Acurácia Média (10-fold CV)')
-    ax.set_title(f'Desempenho do k-NN por Medida de Distância vs. k (Cenário {CENARIO})')
+    ax.set_title(f'Desempenho do k-NN por Medida de Distância vs. k (Cenário {cenario})')
     ax.set_xticks(valores_k)
     ax.grid(alpha=0.3)
     ax.legend()
     fig.tight_layout()
 
-    caminho_fig = os.path.join(PASTA_SAIDA, f'e3_curva_k_metricas_{CENARIO}.png')
+    caminho_fig = os.path.join(PASTA_SAIDA, f'e3_curva_k_metricas_{cenario}.png')
     fig.savefig(caminho_fig, dpi=150)
     plt.close(fig)
     print(f"   -> Gráfico salvo em: {caminho_fig}")
@@ -153,7 +163,7 @@ def executar_experimento_e3():
     # 3. Tabela Comparativa Consolidada no k Ótimo
     # =========================================================================
     print("\n" + "=" * 76)
-    print(f"TABELA E3: COMPARAÇÃO DAS MEDIDAS DE DISTÂNCIA NO k ÓTIMO (CENÁRIO {CENARIO})")
+    print(f"TABELA E3: COMPARAÇÃO DAS MEDIDAS DE DISTÂNCIA NO k ÓTIMO (CENÁRIO {cenario})")
     print("=" * 76)
     print(f"{'Medida de Distância':<24} | {'k Ótimo':<10} | {'Acurácia (Média ± Desvio)':<28}")
     print("-" * 76)
@@ -174,26 +184,11 @@ def executar_experimento_e3():
     print("-" * 76)
 
     # Salva tabela em CSV
-    caminho_csv_res = os.path.join(PASTA_SAIDA, f'e3_comparacao_distancias_{CENARIO}.csv')
+    caminho_csv_res = os.path.join(PASTA_SAIDA, f'e3_comparacao_distancias_{cenario}.csv')
     pd.DataFrame(linhas_csv).to_csv(caminho_csv_res, index=False)
     print(f"\n-> Tabela salva em: {caminho_csv_res}")
 
-    # =========================================================================
-    # 4. Análise e Discussão Teórica dos Resultados
-    # =========================================================================
-    print("\nDISCUSSÃO EXPERIMENTAL E TEÓRICA:")
-    print("1. Análise dos Extremos de k (Conforme Seção 4.4, item 4):")
-    print("   * k = 1: Alta variância e sobreajuste (sensível a ruídos locais e outliers).")
-    print("   * k grande (ex: k=51): Alto viés; o modelo perde fronteiras locais sutis e")
-    print("     tende a convergir para as probabilidades da classe majoritária (Graduate).")
-    print("   * Zona ótima: Entre k=15 e k=27, equilibrando viés e variância.")
-    print("\n2. Discussão sobre Dados Mistos (Euclidiana vs. Manhattan vs. Cosseno):")
-    print("   * A distância Manhattan (L1) costuma ter desempenho superior ou mais estável")
-    print("     em dados mistos após One-Hot Encoding, pois a distância L1 soma as discrepâncias")
-    print("     lineares das colunas binárias sem amplificá-las quadraticamente.")
-    print("   * A distância de Cosseno foca no ângulo entre vetores, perdendo a magnitude")
-    print("     de variáveis contínuas importantes como notas e idade.")
-    print("=" * 76)
+
 
 if __name__ == "__main__":
     executar_experimento_e3()

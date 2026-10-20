@@ -27,52 +27,48 @@ def validacao_cruzada(modelo, X, y, n_folds=10, n_repeticoes=3, semente=42, meto
     
   return np.array(scores)
 
-X, y = carregar_dados("data.csv", cenario="A")
-
-classes, y_numerico = np.unique(y, return_inverse=True)
-
-X_treino, X_teste, y_treino, y_teste = separar_treino_teste(
-    X,
-    y_numerico,
-    seed=42
-)
-
-X_treino = construir_atributos(X_treino)
-X_teste = construir_atributos(X_teste)
-
-mapa_cenario_a = {
-    coluna: MAPA_DE_TIPOS.get(coluna, 'continuo')
-    for coluna in X_treino.columns
-}
-
-# Codifica variáveis nominais e normaliza com Min-Max
-X_treino_processado, X_teste_processado, nomes_atributos = preparar(
-    X_treino,
-    X_teste,
-    mapa_cenario_a,
-    metodo="minmax"
-)
-
-modelo = KNN(
-    k=5,
-    metrica="euclidiana",
-    ponderado=True
-)
-
-modelo.fit(X_treino_processado, y_treino)
-y_pred = modelo.predict(X_teste_processado)
-
-M = matriz_confusao(
-    y_teste,
-    y_pred,
-    len(classes)
-)
-
-
-
-
 # Validação usando o KNN do scikit-learn
 if __name__ == "__main__":
+    X, y = carregar_dados("data.csv", cenario="A")
+
+    classes, y_numerico = np.unique(y, return_inverse=True)
+
+    X_treino, X_teste, y_treino, y_teste = separar_treino_teste(
+        X,
+        y_numerico,
+        seed=42
+    )
+
+    X_treino = construir_atributos(X_treino)
+    X_teste = construir_atributos(X_teste)
+
+    mapa_cenario_a = {
+        coluna: MAPA_DE_TIPOS.get(coluna, 'continuo')
+        for coluna in X_treino.columns
+    }
+
+    X_treino_processado, X_teste_processado, nomes_atributos = preparar(
+        X_treino,
+        X_teste,
+        mapa_cenario_a,
+        metodo="minmax"
+    )
+
+    modelo = KNN(
+        k=5,
+        metrica="euclidiana",
+        ponderado=True
+    )
+
+    modelo.fit(X_treino_processado, y_treino)
+    y_pred = modelo.predict(X_teste_processado)
+
+    M = matriz_confusao(
+        y_teste,
+        y_pred,
+        len(classes)
+    )
+
     from sklearn.neighbors import KNeighborsClassifier
     resultado = relatorio_metricas(M)
     print("\nRelatório:")
@@ -110,7 +106,6 @@ if __name__ == "__main__":
 
     for k in ks:
         m = KNN(k=k, metrica="euclidiana", ponderado=True)
-        # ATENÇÃO: passa X_treino (DataFrame), NÃO X_treino_processado!
         scores_k = validacao_cruzada(m, X_treino, y_treino, n_folds=10, n_repeticoes=3, semente=SEMENTE)
         medias_cv.append(np.mean(scores_k))
         desvios_cv.append(np.std(scores_k))

@@ -1,0 +1,5 @@
+classe,precisao,revocacao,f1,suporte
+Dropout,0.702,0.7465,0.7235,284
+Enrolled,0.3448,0.1258,0.1843,159
+Graduate,0.7695,0.914,0.8356,442
+MÉDIA MACRO,0.6054,0.5954,0.5812,885

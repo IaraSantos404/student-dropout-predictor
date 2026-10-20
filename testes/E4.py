@@ -13,7 +13,7 @@ if str(DIRETORIO_RAIZ) not in sys.path:
 
 import numpy as np
 import pandas as pd
-from sklearn.tree import DecisionTreeClassifier
+from arvoreDecisao import ArvoreDecisao
 
 from dados import carregar_dados, separar_treino_teste, MAPA_DE_TIPOS
 from preprocessamento import preparar, construir_atributos
@@ -25,14 +25,14 @@ CENARIO = 'C'
 PASTA_SAIDA = os.path.join(str(DIRETORIO_RAIZ), 'saidas_experimentos')
 os.makedirs(PASTA_SAIDA, exist_ok=True)
 
-def executar_experimento_e4():
+def executar_experimento_e4(cenario=CENARIO):
     print("=" * 76)
-    print(f"EXPERIMENTO E4: CUSTO COMPUTACIONAL (CENÁRIO {CENARIO})")
+    print(f"EXPERIMENTO E4: CUSTO COMPUTACIONAL (CENÁRIO {cenario})")
     print("=" * 76)
 
     # 1. Carregamento dos dados
     caminho_csv = str(DIRETORIO_RAIZ / "data.csv")
-    X, y = carregar_dados(caminho_csv, cenario=CENARIO)
+    X, y = carregar_dados(caminho_csv, cenario=cenario)
     classes, y_numerico = np.unique(y, return_inverse=True)
 
     X_treino, X_teste, y_treino, y_teste = separar_treino_teste(
@@ -61,7 +61,7 @@ def executar_experimento_e4():
     # 1. MODELO 1: ÁRVORE DE DECISÃO (Aprendizado Ansioso / Eager Learning)
     # =========================================================================
     print("\n[1] Medindo Árvore de Decisão...")
-    modelo_arvore = DecisionTreeClassifier(max_depth=6, min_samples_leaf=5, random_state=SEMENTE)
+    modelo_arvore = ArvoreDecisao(prof_max=6, min_folha=5)
 
     t0 = time.perf_counter()
     modelo_arvore.fit(X_tr_proc, y_treino)
@@ -145,33 +145,11 @@ def executar_experimento_e4():
     print("-" * 76)
 
     # Salva em CSV
-    caminho_csv_res = os.path.join(PASTA_SAIDA, f'e4_custo_computacional_{CENARIO}.csv')
+    caminho_csv_res = os.path.join(PASTA_SAIDA, f'e4_custo_computacional_{cenario}.csv')
     df_res.to_csv(caminho_csv_res, index=False)
     print(f"\n-> Tabela salva em: {caminho_csv_res}")
 
-    # =========================================================================
-    # 5. DISCUSSÃO E ANÁLISE TEÓRICA EXIGIDA NO ROTEIRO
-    # =========================================================================
-    aceleracao_knn = tempo_pred_knn_orig / tempo_pred_knn_pca
-    fator_predicao = tempo_pred_knn_orig / tempo_pred_arvore
 
-    print("\nDISCUSSÃO TEÓRICA:")
-    print("1. Aprendizado Ansioso (Árvore de Decisão):")
-    print(f"   * Gasta tempo no treino ({tempo_treino_arvore*1000:.2f} ms) induzindo a estrutura")
-    print("     recursiva da árvore e encontrando limiares ótimos.")
-    print(f"   * A predição é quase instantânea ({tempo_pred_arvore*1000:.2f} ms), pois requer apenas")
-    print("     percorrer alguns nós (complexidade O(profundidade)).")
-    print(f"\n2. Aprendizado Preguiçoso (k-NN):")
-    print(f"   * O treino é instantâneo ({tempo_treino_knn_orig*1000:.2f} ms): apenas armazena os dados.")
-    print(f"   * A predição é cara ({tempo_pred_knn_orig*1000:.2f} ms): precisa calcular distâncias contra")
-    print(f"     todos os {n_treino} exemplos de treino para cada uma das 1.000 amostras.")
-    print(f"   * Em inferência, a Árvore foi ~{fator_predicao:.1f}x mais rápida que o k-NN original!")
-    print(f"\n3. Efeito da Redução de Dimensionalidade no k-NN:")
-    print(f"   * Reduzindo de {d_original} para {d_reduzido} dimensões via PCA, o tempo de predição")
-    print(f"     caiu de {tempo_pred_knn_orig*1000:.2f} ms para {tempo_pred_knn_pca*1000:.2f} ms (~{aceleracao_knn:.1f}x mais rápido).")
-    print("   * Isso ocorre porque a complexidade de distância euclidiana é O(N * d). Reduzir d")
-    print("     diminui diretamente o número de operações aritméticas por vizinho.")
-    print("=" * 76)
 
 if __name__ == "__main__":
     executar_experimento_e4()

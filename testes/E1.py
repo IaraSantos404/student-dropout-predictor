@@ -1,5 +1,3 @@
-# experimentos e resultados
-
 # E1 - Efeito da normalização: tabela 2 × 2 (árvore / k-NN × com / sem normalização)
 # e explicação do porquê do resultado;
 
@@ -12,21 +10,26 @@ if str(DIRETORIO_RAIZ) not in sys.path:
     sys.path.insert(0, str(DIRETORIO_RAIZ))
 
 import numpy as np
-from sklearn.tree import DecisionTreeClassifier
+from arvoreDecisao import ArvoreDecisao
 
 from dados import carregar_dados, separar_treino_teste
 from preprocessamento import construir_atributos
 from knn import KNN
+import os
+import pandas as pd
 from knn_teste import validacao_cruzada
 
-if __name__ == "__main__":
+PASTA_SAIDA = os.path.join(str(DIRETORIO_RAIZ), "saidas_experimentos")
+os.makedirs(PASTA_SAIDA, exist_ok=True)
+
+def executar_experimento_e1(cenario="A"):
     SEMENTE = 42
     K_ESCOLHIDO = 19      # k ótimo encontrado na validação cruzada do k-NN (no knn_teste)
     PROF_ESCOLHIDA = 6   # profundidade ótima encontrada na validação cruzada da Árvore
 
-    print("Carregando dados (Cenário A)...")
+    print(f"\nCarregando dados (Cenário {cenario})...")
     caminho_csv = str(DIRETORIO_RAIZ / "data.csv")
-    X, y = carregar_dados(caminho_csv, cenario="A")
+    X, y = carregar_dados(caminho_csv, cenario=cenario)
     classes, y_numerico = np.unique(y, return_inverse=True)
 
     X_treino, X_teste, y_treino, y_teste = separar_treino_teste(
@@ -35,21 +38,14 @@ if __name__ == "__main__":
         seed=SEMENTE
     )
 
-    # Engenharia de atributos
     X_treino = construir_atributos(X_treino)
     X_teste = construir_atributos(X_teste)
 
     print("\nExecutando Experimento E1 (Validação Cruzada 10-fold x 3 repetições)...")
 
-    # ==========================================
     # 1. Árvore de Decisão (com e sem normalização)
-    # ==========================================
     print("-> Avaliando Árvore de Decisão...")
-    arvore_sem = DecisionTreeClassifier(
-        max_depth=PROF_ESCOLHIDA,
-        min_samples_leaf=5,
-        random_state=SEMENTE
-    )
+    arvore_sem = ArvoreDecisao(prof_max=PROF_ESCOLHIDA, min_folha=5)
     scores_arvore_sem = validacao_cruzada(
         arvore_sem,
         X_treino,
@@ -60,11 +56,7 @@ if __name__ == "__main__":
         metodo_norm=None
     )
 
-    arvore_com = DecisionTreeClassifier(
-        max_depth=PROF_ESCOLHIDA,
-        min_samples_leaf=5,
-        random_state=SEMENTE
-    )
+    arvore_com = ArvoreDecisao(prof_max=PROF_ESCOLHIDA, min_folha=5)
     scores_arvore_com = validacao_cruzada(
         arvore_com,
         X_treino,
@@ -75,9 +67,8 @@ if __name__ == "__main__":
         metodo_norm="minmax"
     )
 
-    # ==========================================
+    
     # 2. k-NN (com e sem normalização)
-    # ==========================================
     print("-> Avaliando k-NN...")
     knn_sem = KNN(k=K_ESCOLHIDO, metrica="euclidiana", ponderado=True)
     scores_knn_sem = validacao_cruzada(
@@ -121,16 +112,27 @@ if __name__ == "__main__":
     print("-" * 76)
 
 
-    dif_knn = (med_knn_com - med_knn_sem) * 100
-    dif_arvore = (med_arvore_com - med_arvore_sem) * 100
+    # Salva tabela 2x2 em CSV
+    df_e1 = pd.DataFrame([
+        {
+            'modelo': f'Árvore (prof={PROF_ESCOLHIDA})',
+            'sem_normalizacao_media': round(med_arvore_sem, 4),
+            'sem_normalizacao_std': round(std_arvore_sem, 4),
+            'com_normalizacao_media': round(med_arvore_com, 4),
+            'com_normalizacao_std': round(std_arvore_com, 4),
+        },
+        {
+            'modelo': f'k-NN (k={K_ESCOLHIDO})',
+            'sem_normalizacao_media': round(med_knn_sem, 4),
+            'sem_normalizacao_std': round(std_knn_sem, 4),
+            'com_normalizacao_media': round(med_knn_com, 4),
+            'com_normalizacao_std': round(std_knn_com, 4),
+        }
+    ])
+    caminho_csv = os.path.join(PASTA_SAIDA, f'e1_efeito_normalizacao_{cenario}.csv')
+    df_e1.to_csv(caminho_csv, index=False)
+    print(f"\n-> Tabela E1 salva em: {caminho_csv}")
 
-    print("\nANÁLISE E CONCLUSÃO EXPERIMENTAL:")
-    print(f"1. k-NN: Variação de {dif_knn:+.2f} p.p. com a normalização.")
-    print("   -> A normalização é DECISIVA para o k-NN, pois o cálculo de distâncias")
-    print("      euclidianas é sensível à escala dos atributos. Sem normalização,")
-    print("      atributos com maior amplitude numérica dominam os cálculos.")
-    print(f"\n2. Árvore de Decisão: Variação de {dif_arvore:+.2f} p.p. com a normalização.")
-    print("   -> A normalização é IRRELEVANTE para a Árvore de Decisão, pois as")
-    print("      divisões dependem apenas da ordenação dos valores de cada atributo.")
-    print("      Transformações monótonas como Min-Max preservam a ordem relativa.")
-    print("=" * 76)
+if __name__ == "__main__":
+    executar_experimento_e1()
+

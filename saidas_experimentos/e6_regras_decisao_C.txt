@@ -1,46 +1,107 @@
-|--- taxa_aprovacao_2sem <= 0.77
-|   |--- taxa_aprovacao_2sem <= 0.23
-|   |   |--- Curricular units 2nd sem (enrolled) <= 0.02
-|   |   |   |--- Admission grade <= 0.43
-|   |   |   |   |--- truncated branch of depth 3
-|   |   |   |--- Admission grade >  0.43
-|   |   |   |   |--- truncated branch of depth 3
-|   |   |--- Curricular units 2nd sem (enrolled) >  0.02
-|   |   |   |--- taxa_aprovacao_2sem <= 0.15
-|   |   |   |   |--- truncated branch of depth 3
-|   |   |   |--- taxa_aprovacao_2sem >  0.15
-|   |   |   |   |--- truncated branch of depth 3
-|   |--- taxa_aprovacao_2sem >  0.23
-|   |   |--- Tuition fees up to date <= 0.50
-|   |   |   |--- GDP <= 0.77
-|   |   |   |   |--- truncated branch of depth 3
-|   |   |   |--- GDP >  0.77
-|   |   |   |   |--- truncated branch of depth 3
-|   |   |--- Tuition fees up to date >  0.50
-|   |   |   |--- taxa_aprovacao_1sem <= 0.85
-|   |   |   |   |--- truncated branch of depth 3
-|   |   |   |--- taxa_aprovacao_1sem >  0.85
-|   |   |   |   |--- truncated branch of depth 3
-|--- taxa_aprovacao_2sem >  0.77
-|   |--- taxa_aprovacao_2sem <= 0.86
-|   |   |--- Tuition fees up to date <= 0.50
-|   |   |   |--- GDP <= 0.79
-|   |   |   |   |--- truncated branch of depth 2
-|   |   |   |--- GDP >  0.79
-|   |   |   |   |--- truncated branch of depth 2
-|   |   |--- Tuition fees up to date >  0.50
-|   |   |   |--- evolucao_aprovacao <= 0.61
-|   |   |   |   |--- truncated branch of depth 3
-|   |   |   |--- evolucao_aprovacao >  0.61
-|   |   |   |   |--- truncated branch of depth 3
-|   |--- taxa_aprovacao_2sem >  0.86
-|   |   |--- Tuition fees up to date <= 0.50
-|   |   |   |--- delta_nota_ingresso <= 0.49
-|   |   |   |   |--- truncated branch of depth 3
-|   |   |   |--- delta_nota_ingresso >  0.49
-|   |   |   |   |--- truncated branch of depth 3
-|   |   |--- Tuition fees up to date >  0.50
-|   |   |   |--- taxa_aprovacao_1sem <= 0.83
-|   |   |   |   |--- truncated branch of depth 3
-|   |   |   |--- taxa_aprovacao_1sem >  0.83
-|   |   |   |   |--- truncated branch of depth 3
+[taxa_aprovacao_2sem <= 0.7735] n=3539
+   [taxa_aprovacao_2sem <= 0.225] n=1461
+      [Course_171 <= 0.5] n=790
+         [taxa_aprovacao_2sem <= 0.1548] n=642
+            [Curricular units 1st sem (without evaluations) <= 0.375] n=566
+               [Father's occupation_outros <= 0.5] n=558
+                  --> Dropout (n=544, impureza=0.091)
+                  --> Dropout (n=14, impureza=0.408)
+               --> Dropout (n=8, impureza=0.469)
+            [Course_9119 <= 0.5] n=76
+               [evolucao_aprovacao <= 0.287] n=65
+                  --> Dropout (n=10, impureza=0.500)
+                  --> Dropout (n=55, impureza=0.222)
+               [Mother's qualification <= 0.2558] n=11
+                  --> Enrolled (n=6, impureza=0.278)
+                  --> Dropout (n=5, impureza=0.480)
+         [Admission grade <= 0.4321] n=148
+            [Tuition fees up to date <= 0.5] n=79
+               [Previous qualification (grade) <= 0.3632] n=13
+                  --> Dropout (n=8, impureza=0.000)
+                  --> Dropout (n=5, impureza=0.320)
+               [Application order <= 0.1667] n=66
+                  --> Dropout (n=44, impureza=0.525)
+                  --> Graduate (n=22, impureza=0.616)
+            [Debtor <= 0.5] n=69
+               [Application mode_1 <= 0.5] n=62
+                  --> Graduate (n=21, impureza=0.635)
+                  --> Graduate (n=41, impureza=0.364)
+               --> Dropout (n=7, impureza=0.449)
+      [Tuition fees up to date <= 0.5] n=671
+         [GDP <= 0.7695] n=115
+            [Curricular units 2nd sem (grade) <= 0.000777] n=79
+               --> Dropout (n=65, impureza=0.000)
+               [Previous qualification (grade) <= 0.4268] n=14
+                  --> Dropout (n=9, impureza=0.000)
+                  --> Dropout (n=5, impureza=0.560)
+            [evolucao_nota <= 0.5324] n=36
+               [Admission grade <= 0.3526] n=10
+                  --> Dropout (n=5, impureza=0.320)
+                  --> Enrolled (n=5, impureza=0.000)
+               [evolucao_nota <= 0.5325] n=26
+                  --> Dropout (n=17, impureza=0.000)
+                  --> Dropout (n=9, impureza=0.444)
+         [taxa_aprovacao_1sem <= 0.8452] n=556
+            [Age at enrollment <= 0.1226] n=414
+               [taxa_aprovacao_2sem <= 0.5857] n=292
+                  --> Enrolled (n=134, impureza=0.518)
+                  --> Enrolled (n=158, impureza=0.563)
+               [taxa_aprovacao_2sem <= 0.5774] n=122
+                  --> Dropout (n=57, impureza=0.366)
+                  --> Dropout (n=65, impureza=0.597)
+            [Curricular units 1st sem (enrolled) <= 0.2115] n=142
+               [Admission grade <= 0.2842] n=28
+                  --> Enrolled (n=15, impureza=0.231)
+                  --> Enrolled (n=13, impureza=0.615)
+               [Scholarship holder <= 0.5] n=114
+                  --> Graduate (n=86, impureza=0.638)
+                  --> Graduate (n=28, impureza=0.439)
+   [taxa_aprovacao_2sem <= 0.8634] n=2078
+      [Tuition fees up to date <= 0.5] n=552
+         [GDP <= 0.788] n=40
+            [Father's occupation_9 <= 0.5] n=25
+               --> Dropout (n=18, impureza=0.000)
+               --> Dropout (n=7, impureza=0.408)
+            [Mother's qualification <= 0.02326] n=15
+               --> Dropout (n=5, impureza=0.640)
+               --> Enrolled (n=10, impureza=0.000)
+         [evolucao_aprovacao <= 0.6131] n=512
+            [Curricular units 2nd sem (grade) <= 0.0007496] n=411
+               [Curricular units 2nd sem (enrolled) <= 0.587] n=189
+                  --> Graduate (n=184, impureza=0.592)
+                  --> Dropout (n=5, impureza=0.000)
+               [Unemployment rate <= 0.07558] n=222
+                  --> Graduate (n=74, impureza=0.176)
+                  --> Graduate (n=148, impureza=0.495)
+            [delta_nota_ingresso <= 0.5888] n=101
+               [Father's occupation_3 <= 0.5] n=92
+                  --> Enrolled (n=86, impureza=0.541)
+                  --> Graduate (n=6, impureza=0.444)
+               --> Dropout (n=9, impureza=0.494)
+      [Tuition fees up to date <= 0.5] n=1526
+         [delta_nota_ingresso <= 0.4948] n=40
+            [evolucao_nota <= 0.5324] n=18
+               --> Enrolled (n=5, impureza=0.320)
+               [GDP <= 0.7847] n=13
+                  --> Graduate (n=8, impureza=0.219)
+                  --> Graduate (n=5, impureza=0.480)
+            [Curricular units 1st sem (grade) <= 0.0007637] n=22
+               [Unemployment rate <= 0.2907] n=17
+                  --> Dropout (n=5, impureza=0.560)
+                  --> Dropout (n=12, impureza=0.000)
+               --> Graduate (n=5, impureza=0.560)
+         [taxa_aprovacao_1sem <= 0.8284] n=1486
+            [Inflation rate <= 0.3] n=127
+               [Course_9238 <= 0.5] n=49
+                  --> Enrolled (n=43, impureza=0.651)
+                  --> Graduate (n=6, impureza=0.000)
+               [Marital status_2 <= 0.5] n=78
+                  --> Graduate (n=69, impureza=0.276)
+                  --> Enrolled (n=9, impureza=0.568)
+            [Course_9119 <= 0.5] n=1359
+               [Age at enrollment <= 0.1226] n=1343
+                  --> Graduate (n=1095, impureza=0.161)
+                  --> Graduate (n=248, impureza=0.316)
+               [Father's qualification <= 0.1512] n=16
+                  --> Enrolled (n=7, impureza=0.571)
+                  --> Graduate (n=9, impureza=0.370)

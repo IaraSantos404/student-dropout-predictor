@@ -15,12 +15,12 @@ if str(DIRETORIO_RAIZ) not in sys.path:
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.tree import DecisionTreeClassifier
+from arvoreDecisao import ArvoreDecisao
 from sklearn.model_selection import StratifiedKFold
 
 from dados import carregar_dados, separar_treino_teste, MAPA_DE_TIPOS
 from preprocessamento import preparar, construir_atributos
-from pca import pca_ajustar, pca_projetar, cargas_componentes
+from pca import pca_ajustar, pca_projetar, cargas_componentes, pontuar_atributos, selecionar_topk
 from knn import KNN
 
 # Configurações gerais
@@ -32,13 +32,13 @@ os.makedirs(PASTA_SAIDA, exist_ok=True)
 
 CORES_CLASSES = {'Dropout': '#D55E00', 'Enrolled': '#0072B2', 'Graduate': '#009E73'}
 
-def executar_experimento_e2():
+def executar_experimento_e2(cenario=CENARIO):
     print("=" * 76)
-    print(f"EXPERIMENTO E2: ANÁLISE DE COMPONENTES PRINCIPAIS (CENÁRIO {CENARIO})")
+    print(f"EXPERIMENTO E2: ANÁLISE DE COMPONENTES PRINCIPAIS (CENÁRIO {cenario})")
     print("=" * 76)
 
     caminho_csv = str(DIRETORIO_RAIZ / "data.csv")
-    X, y = carregar_dados(caminho_csv, cenario=CENARIO)
+    X, y = carregar_dados(caminho_csv, cenario=cenario)
     classes, y_numerico = np.unique(y, return_inverse=True)
 
     X_treino, X_teste, y_treino, y_teste = separar_treino_teste(
@@ -66,8 +66,8 @@ def executar_experimento_e2():
     media_std, W_std, ve_std = pca_ajustar(X_tr_std, None)
     df_cargas_std = cargas_componentes(W_std, nomes_atributos, 3)
 
-    df_cargas_std.to_csv(os.path.join(PASTA_SAIDA, f'e2_cargas_com_padronizacao_{CENARIO}.csv'))
-    df_cargas_raw.to_csv(os.path.join(PASTA_SAIDA, f'e2_cargas_sem_padronizacao_{CENARIO}.csv'))
+    df_cargas_std.to_csv(os.path.join(PASTA_SAIDA, f'e2_cargas_com_padronizacao_{cenario}.csv'))
+    df_cargas_raw.to_csv(os.path.join(PASTA_SAIDA, f'e2_cargas_sem_padronizacao_{cenario}.csv'))
 
     print("   -> Cargas salvas em CSV na pasta saidas_pca/.")
     print("   -> Principais variáveis na PC1 (COM padronização):")
@@ -95,12 +95,12 @@ def executar_experimento_e2():
     ax.axvline(d_90, ls=':', color='#D55E00', lw=2, label=f'd={d_90} (90%)')
     ax.set_xlabel('Número de Componentes Principais (d)')
     ax.set_ylabel('Variância Explicada')
-    ax.set_title(f'Variância Explicada pelo PCA - Cenário {CENARIO}')
+    ax.set_title(f'Variância Explicada pelo PCA - Cenário {cenario}')
     ax.set_ylim(0, 1.05)
     ax.legend(loc='lower right')
     ax.grid(alpha=0.3)
     fig.tight_layout()
-    caminho_fig_var = os.path.join(PASTA_SAIDA, f'e2_variancia_explicada_{CENARIO}.png')
+    caminho_fig_var = os.path.join(PASTA_SAIDA, f'e2_variancia_explicada_{cenario}.png')
     fig.savefig(caminho_fig_var, dpi=150)
     plt.close(fig)
     print(f"   -> Gráfico salvo em: {caminho_fig_var}")
@@ -124,11 +124,11 @@ def executar_experimento_e2():
         )
     ax.set_xlabel(f'Componente Principal 1 ({ve_std[0]:.1%})')
     ax.set_ylabel(f'Componente Principal 2 ({ve_std[1]:.1%})')
-    ax.set_title(f'Projeção 2D dos Alunos (PCA) - Cenário {CENARIO}')
+    ax.set_title(f'Projeção 2D dos Alunos (PCA) - Cenário {cenario}')
     ax.legend(markerscale=2)
     ax.grid(alpha=0.3)
     fig.tight_layout()
-    caminho_fig_2d = os.path.join(PASTA_SAIDA, f'e2_projecao_2d_{CENARIO}.png')
+    caminho_fig_2d = os.path.join(PASTA_SAIDA, f'e2_projecao_2d_{cenario}.png')
     fig.savefig(caminho_fig_2d, dpi=150)
     plt.close(fig)
     print(f"   -> Gráfico 2D salvo em: {caminho_fig_2d}")
@@ -148,11 +148,13 @@ def executar_experimento_e2():
     skf = StratifiedKFold(n_splits=10, shuffle=True, random_state=SEMENTE)
 
     res_arvore_media, res_arvore_std = [], []
-    res_knn_media, res_knn_std = [], []
+    res_knn_pca_media, res_knn_pca_std = [], []
+    res_knn_sel_media, res_knn_sel_std = [], []
 
     for d in candidatos_d:
         scores_arvore = []
-        scores_knn = []
+        scores_knn_pca = []
+        scores_knn_sel = []
 
         for tr_idx, val_idx in skf.split(X_treino, y_treino):
             X_tr_fold = X_treino.iloc[tr_idx]
@@ -163,54 +165,72 @@ def executar_experimento_e2():
             # 1. Padroniza dentro do fold (sem vazamento)
             Xtr_s, Xval_s, _ = preparar(X_tr_fold, X_val_fold, mapa_tipos, metodo='zscore')
 
-            # 2. Ajusta PCA no treino do fold e projeta
+            # 2. Ajusta PCA no treino do fold e projeta (Extração)
             media_fold, W_fold, _ = pca_ajustar(Xtr_s, d)
             Z_tr_fold = pca_projetar(Xtr_s, media_fold, W_fold)
             Z_val_fold = pca_projetar(Xval_s, media_fold, W_fold)
 
-            # 3. Árvore de Decisão
-            arvore = DecisionTreeClassifier(max_depth=6, min_samples_leaf=5, random_state=SEMENTE)
+            # 3. Seleção Top-k de atributos via ANOVA (Seleção)
+            scores_feat = pontuar_atributos(Xtr_s, y_tr_fold, criterio='anova')
+            top_k_idx = selecionar_topk(scores_feat, d)
+            S_tr_fold = Xtr_s[:, top_k_idx]
+            S_val_fold = Xval_s[:, top_k_idx]
+
+            # 4. Árvore de Decisão (PCA)
+            arvore = ArvoreDecisao(prof_max=6, min_folha=5)
             arvore.fit(Z_tr_fold, y_tr_fold)
             pred_arvore = arvore.predict(Z_val_fold)
             scores_arvore.append(np.mean(pred_arvore == y_val_fold))
 
-            # 4. k-NN (k=19)
-            knn = KNN(k=19, metrica="euclidiana", ponderado=True)
-            knn.fit(Z_tr_fold, y_tr_fold)
-            pred_knn = knn.predict(Z_val_fold)
-            scores_knn.append(np.mean(pred_knn == y_val_fold))
+            # 5. k-NN (PCA - Projeção)
+            knn_pca = KNN(k=19, metrica="euclidiana", ponderado=True)
+            knn_pca.fit(Z_tr_fold, y_tr_fold)
+            pred_knn_p = knn_pca.predict(Z_val_fold)
+            scores_knn_pca.append(np.mean(pred_knn_p == y_val_fold))
+
+            # 6. k-NN (Top-k - Seleção)
+            knn_sel = KNN(k=19, metrica="euclidiana", ponderado=True)
+            knn_sel.fit(S_tr_fold, y_tr_fold)
+            pred_knn_s = knn_sel.predict(S_val_fold)
+            scores_knn_sel.append(np.mean(pred_knn_s == y_val_fold))
 
         med_a, std_a = np.mean(scores_arvore), np.std(scores_arvore)
-        med_k, std_k = np.mean(scores_knn), np.std(scores_knn)
+        med_kp, std_kp = np.mean(scores_knn_pca), np.std(scores_knn_pca)
+        med_ks, std_ks = np.mean(scores_knn_sel), np.std(scores_knn_sel)
 
         res_arvore_media.append(med_a)
         res_arvore_std.append(std_a)
-        res_knn_media.append(med_k)
-        res_knn_std.append(std_k)
+        res_knn_pca_media.append(med_kp)
+        res_knn_pca_std.append(std_kp)
+        res_knn_sel_media.append(med_ks)
+        res_knn_sel_std.append(std_ks)
 
-        print(f"   * d = {d:2d} | Árvore: {med_a:.4f} ± {std_a:.4f} | k-NN: {med_k:.4f} ± {std_k:.4f}")
+        print(f"   * d = {d:2d} | Árvore (PCA): {med_a:.4f} ± {std_a:.4f} | k-NN (PCA): {med_kp:.4f} ± {std_kp:.4f} | k-NN (Seleção): {med_ks:.4f} ± {std_ks:.4f}")
 
-    # Plotando a Curva de Desempenho conjunta
-    fig, ax = plt.subplots(figsize=(8.5, 5))
+    fig, ax = plt.subplots(figsize=(9, 5))
     ax.errorbar(
         candidatos_d, res_arvore_media, yerr=res_arvore_std,
-        fmt='o-', color='#D55E00', capsize=4, lw=1.8, label='Árvore de Decisão (prof=6)'
+        fmt='o-', color='#D55E00', capsize=4, lw=1.8, label='Árvore de Decisão (PCA, prof=6)'
     )
     ax.errorbar(
-        candidatos_d, res_knn_media, yerr=res_knn_std,
-        fmt='s--', color='#0072B2', capsize=4, lw=1.8, label='k-NN (k=19, Euclidiana)'
+        candidatos_d, res_knn_pca_media, yerr=res_knn_pca_std,
+        fmt='s--', color='#0072B2', capsize=4, lw=1.8, label='k-NN (Projeção PCA, k=19)'
+    )
+    ax.errorbar(
+        candidatos_d, res_knn_sel_media, yerr=res_knn_sel_std,
+        fmt='^-.', color='#009E73', capsize=4, lw=1.8, label='k-NN (Seleção Top-k ANOVA, k=19)'
     )
     ax.axvline(d_90, ls=':', color='gray', label=f'd={d_90} (90% Variância)')
 
-    ax.set_xlabel('Número de Componentes Principais (d)')
+    ax.set_xlabel('Número de Dimensões / Atributos (d)')
     ax.set_ylabel('Acurácia (Validação Cruzada 10-fold)')
-    ax.set_title(f'Desempenho dos Classificadores vs. Dimensão do PCA (Cenário {CENARIO})')
+    ax.set_title(f'Desempenho: Seleção vs. Projeção PCA (Cenário {cenario})')
     ax.set_xticks(candidatos_d)
     ax.grid(alpha=0.3)
     ax.legend()
     fig.tight_layout()
 
-    caminho_fig_curva = os.path.join(PASTA_SAIDA, f'e2_curva_desempenho_{CENARIO}.png')
+    caminho_fig_curva = os.path.join(PASTA_SAIDA, f'e2_curva_desempenho_{cenario}.png')
     fig.savefig(caminho_fig_curva, dpi=150)
     plt.close(fig)
     print(f"\n   -> Gráfico da curva de desempenho salvo em: {caminho_fig_curva}")
@@ -218,17 +238,20 @@ def executar_experimento_e2():
     # Salva tabela de resultados em CSV
     df_res = pd.DataFrame({
         'd': candidatos_d,
-        'acuracia_arvore_media': np.round(res_arvore_media, 4),
-        'acuracia_arvore_std': np.round(res_arvore_std, 4),
-        'acuracia_knn_media': np.round(res_knn_media, 4),
-        'acuracia_knn_std': np.round(res_knn_std, 4),
+        'acuracia_arvore_pca_media': np.round(res_arvore_media, 4),
+        'acuracia_arvore_pca_std': np.round(res_arvore_std, 4),
+        'acuracia_knn_pca_media': np.round(res_knn_pca_media, 4),
+        'acuracia_knn_pca_std': np.round(res_knn_pca_std, 4),
+        'acuracia_knn_selecao_media': np.round(res_knn_sel_media, 4),
+        'acuracia_knn_selecao_std': np.round(res_knn_sel_std, 4),
     })
-    caminho_csv_res = os.path.join(PASTA_SAIDA, f'e2_desempenho_pca_{CENARIO}.csv')
+    caminho_csv_res = os.path.join(PASTA_SAIDA, f'e2_desempenho_pca_{cenario}.csv')
     df_res.to_csv(caminho_csv_res, index=False)
     print(f"   -> Tabela consolidada salva em: {caminho_csv_res}")
 
     print("\n" + "=" * 76)
     print("EXPERIMENTO E2 CONCLUÍDO COM SUCESSO!")
+
     print("=" * 76)
 
 if __name__ == "__main__":

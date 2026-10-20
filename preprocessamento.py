@@ -43,7 +43,7 @@ def codificar_transform(x, params):
         cols[f'{coluna}_{cat}'] = (serie == cat).astype(float)
       if info['tem_outros']:
         cols[f'{coluna}_outros'] = (serie.isin(info['categorias']) == False).astype(float)
-        partes.append(pd.DataFrame(cols, index=x.index))
+      partes.append(pd.DataFrame(cols, index=x.index))
 
   return pd.concat(partes, axis=1)
 

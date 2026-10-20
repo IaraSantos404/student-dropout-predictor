@@ -15,7 +15,7 @@ if str(DIRETORIO_RAIZ) not in sys.path:
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.tree import DecisionTreeClassifier
+from arvoreDecisao import ArvoreDecisao
 
 from dados import carregar_dados, separar_treino_teste, MAPA_DE_TIPOS
 from preprocessamento import preparar, construir_atributos
@@ -30,14 +30,14 @@ MIN_FOLHA = 5
 PASTA_SAIDA = os.path.join(str(DIRETORIO_RAIZ), 'saidas_experimentos')
 os.makedirs(PASTA_SAIDA, exist_ok=True)
 
-def executar_experimento_e5():
+def executar_experimento_e5(cenario=CENARIO):
     print("=" * 76)
-    print(f"EXPERIMENTO E5: AVALIAÇÃO DO MODELO FINAL NO TESTE (CENÁRIO {CENARIO})")
+    print(f"EXPERIMENTO E5: AVALIAÇÃO DO MODELO FINAL NO TESTE (CENÁRIO {cenario})")
     print("=" * 76)
 
     # 1. Carregamento dos dados e partição Treino/Teste (80% / 20%)
     caminho_csv = str(DIRETORIO_RAIZ / "data.csv")
-    X, y = carregar_dados(caminho_csv, cenario=CENARIO)
+    X, y = carregar_dados(caminho_csv, cenario=cenario)
     classes, y_numerico = np.unique(y, return_inverse=True)
 
     X_treino, X_teste, y_treino, y_teste = separar_treino_teste(
@@ -60,12 +60,7 @@ def executar_experimento_e5():
     # 2. Ajuste do modelo campeão da validação cruzada
     print(f"\n[1] Treinando o Modelo Final Escolhido:")
     print(f"    -> Árvore de Decisão (Critério=Gini, prof_max={PROF_OTIMA}, min_samples_leaf={MIN_FOLHA})")
-    modelo = DecisionTreeClassifier(
-        criterion='gini',
-        max_depth=PROF_OTIMA,
-        min_samples_leaf=MIN_FOLHA,
-        random_state=SEMENTE
-    )
+    modelo = ArvoreDecisao(criterio='gini', prof_max=PROF_OTIMA, min_folha=MIN_FOLHA)
     modelo.fit(X_tr_proc, y_treino)
 
     # 3. Predição no conjunto de teste independente
@@ -123,13 +118,6 @@ def executar_experimento_e5():
     print(f"  * Confundidos com Dropout:    {para_dropout:3d} ({para_dropout / total_enrolled:.1%})")
     print(f"  * Confundidos com Graduate:   {para_graduate:3d} ({para_graduate / total_enrolled:.1%})")
     print(f"  * Taxa de erro para Enrolled: {(total_enrolled - acertos_enrolled) / total_enrolled:.1%}")
-    print("\nPOR QUE A CLASSE 'ENROLLED' É AMBÍGUA E TEM DESEMPENHO INFERIOR?")
-    print("1. Natureza Transitória: 'Enrolled' não é um desfecho definitivo, mas sim um estado")
-    print("   temporário de quem ainda está cursando. Alguns alunos matriculados estão com ótimo")
-    print("   desempenho (perfil idêntico a Graduate), enquanto outros acumulam reprovações")
-    print("   (perfil idêntico a Dropout).")
-    print("2. Desbalanceamento: É a classe minoritária da base (~17.9%), o que faz os modelos")
-    print("   terem menos exemplos de treino e tenderem a prever as classes majoritárias.")
     print("=" * 76)
 
     # 6. Salvar Matriz de Confusão em Gráfico Heatmap
@@ -148,10 +136,10 @@ def executar_experimento_e5():
     ax.set_yticklabels(classes)
     ax.set_xlabel('Classe Prevista', fontweight='bold', labelpad=10)
     ax.set_ylabel('Classe Real', fontweight='bold')
-    ax.set_title(f'Matriz de Confusão - Modelo Final (Cenário {CENARIO})', pad=15)
+    ax.set_title(f'Matriz de Confusão - Modelo Final (Cenário {cenario})', pad=15)
     fig.tight_layout()
 
-    caminho_fig = os.path.join(PASTA_SAIDA, f'e5_matriz_confusao_{CENARIO}.png')
+    caminho_fig = os.path.join(PASTA_SAIDA, f'e5_matriz_confusao_{cenario}.png')
     fig.savefig(caminho_fig, dpi=150)
     plt.close(fig)
     print(f"\n-> Gráfico da Matriz de Confusão salvo em: {caminho_fig}")
@@ -164,7 +152,7 @@ def executar_experimento_e5():
         'f1': list(np.round(relatorio['f1'], 4)) + [round(float(relatorio['f1_macro']), 4)],
         'suporte': [int(M[c].sum()) for c in range(len(classes))] + [int(M.sum())]
     })
-    caminho_csv = os.path.join(PASTA_SAIDA, f'e5_metricas_teste_{CENARIO}.csv')
+    caminho_csv = os.path.join(PASTA_SAIDA, f'e5_metricas_teste_{cenario}.csv')
     df_metricas.to_csv(caminho_csv, index=False)
     print(f"-> Métricas salvas em CSV: {caminho_csv}")
 

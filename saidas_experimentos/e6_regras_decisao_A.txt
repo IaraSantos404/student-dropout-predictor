@@ -1,0 +1,89 @@
+[Tuition fees up to date <= 0.5] n=3539
+   [GDP <= 0.788] n=419
+      [Application mode_outros <= 0.5] n=329
+         [Age at enrollment <= 0.06604] n=320
+            [Previous qualification (grade) <= 0.5211] n=98
+               [Application mode_44 <= 0.5] n=90
+                  --> Dropout (n=84, impureza=0.156)
+                  --> Dropout (n=6, impureza=0.444)
+               --> Dropout (n=8, impureza=0.469)
+            [Course_9853 <= 0.5] n=222
+               [max_escolaridade_pais <= 0.05814] n=216
+                  --> Dropout (n=39, impureza=0.097)
+                  --> Dropout (n=177, impureza=0.011)
+               --> Dropout (n=6, impureza=0.278)
+         --> Graduate (n=9, impureza=0.494)
+      [Debtor <= 0.5] n=90
+         [Age at enrollment <= 0.1887] n=34
+            [delta_nota_ingresso <= 0.539] n=27
+               [Admission grade <= 0.2132] n=20
+                  --> Dropout (n=5, impureza=0.640)
+                  --> Enrolled (n=15, impureza=0.240)
+               --> Dropout (n=7, impureza=0.612)
+            --> Dropout (n=7, impureza=0.245)
+         [Age at enrollment <= 0.1604] n=56
+            [Mother's qualification <= 0.2326] n=34
+               [Previous qualification (grade) <= 0.2684] n=18
+                  --> Dropout (n=5, impureza=0.480)
+                  --> Dropout (n=13, impureza=0.142)
+               [Application order <= 0.1667] n=16
+                  --> Enrolled (n=11, impureza=0.562)
+                  --> Dropout (n=5, impureza=0.320)
+            [Mother's qualification <= 0.1512] n=22
+               --> Dropout (n=5, impureza=0.320)
+               --> Dropout (n=17, impureza=0.000)
+   [Scholarship holder <= 0.5] n=3120
+      [Age at enrollment <= 0.08491] n=2264
+         [Course_9500 <= 0.5] n=1440
+            [Course_9119 <= 0.5] n=1158
+               [Course_9853 <= 0.5] n=1095
+                  --> Graduate (n=1015, impureza=0.604)
+                  --> Dropout (n=80, impureza=0.648)
+               [Previous qualification (grade) <= 0.2737] n=63
+                  --> Dropout (n=7, impureza=0.408)
+                  --> Enrolled (n=56, impureza=0.558)
+            [Father's occupation_outros <= 0.5] n=282
+               [Father's occupation_4 <= 0.5] n=276
+                  --> Graduate (n=244, impureza=0.358)
+                  --> Graduate (n=32, impureza=0.541)
+               --> Enrolled (n=6, impureza=0.000)
+         [Course_8014 <= 0.5] n=824
+            [Mother's occupation_90 <= 0.5] n=722
+               [Father's occupation_outros <= 0.5] n=702
+                  --> Dropout (n=680, impureza=0.635)
+                  --> Enrolled (n=22, impureza=0.512)
+               [Admission grade <= 0.1705] n=20
+                  --> Dropout (n=5, impureza=0.320)
+                  --> Dropout (n=15, impureza=0.000)
+            [Admission grade <= 0.1421] n=102
+               [delta_nota_ingresso <= 0.2599] n=24
+                  --> Graduate (n=5, impureza=0.320)
+                  --> Dropout (n=19, impureza=0.615)
+               [max_escolaridade_pais <= 0.8023] n=78
+                  --> Graduate (n=30, impureza=0.527)
+                  --> Graduate (n=48, impureza=0.430)
+      [Unemployment rate <= 0.07558] n=856
+         [Course_9500 <= 0.5] n=46
+            [Mother's occupation_0 <= 0.5] n=23
+               [Father's qualification <= 0.6628] n=18
+                  --> Dropout (n=5, impureza=0.480)
+                  --> Enrolled (n=13, impureza=0.272)
+               --> Dropout (n=5, impureza=0.000)
+            [Application mode_43 <= 0.5] n=23
+               --> Graduate (n=17, impureza=0.000)
+               --> Enrolled (n=6, impureza=0.500)
+         [Gender <= 0.5] n=810
+            [Course_9991 <= 0.5] n=636
+               [Previous qualification (grade) <= 0.3842] n=624
+                  --> Graduate (n=249, impureza=0.345)
+                  --> Graduate (n=375, impureza=0.200)
+               [Admission grade <= 0.4421] n=12
+                  --> Graduate (n=7, impureza=0.449)
+                  --> Enrolled (n=5, impureza=0.000)
+            [Course_9119 <= 0.5] n=174
+               [Previous qualification (grade) <= 0.4263] n=158
+                  --> Graduate (n=100, impureza=0.559)
+                  --> Graduate (n=58, impureza=0.273)
+               [Previous qualification (grade) <= 0.3737] n=16
+                  --> Enrolled (n=8, impureza=0.594)
+                  --> Dropout (n=8, impureza=0.531)

@@ -1,0 +1,103 @@
+[taxa_aprovacao_1sem <= 0.7817] n=3539
+   [Tuition fees up to date <= 0.5] n=1343
+      [Age at enrollment <= 0.0283] n=323
+         [Curricular units 1st sem (evaluations) <= 0.1889] n=28
+            [Mother's occupation_5 <= 0.5] n=19
+               --> Dropout (n=14, impureza=0.000)
+               --> Dropout (n=5, impureza=0.320)
+            --> Dropout (n=9, impureza=0.568)
+         [GDP <= 0.7695] n=295
+            [Course_171 <= 0.5] n=226
+               [Course_9119 <= 0.5] n=213
+                  --> Dropout (n=201, impureza=0.000)
+                  --> Dropout (n=12, impureza=0.153)
+               [Previous qualification (grade) <= 0.3947] n=13
+                  --> Dropout (n=8, impureza=0.000)
+                  --> Dropout (n=5, impureza=0.480)
+            [Course_9085 <= 0.5] n=69
+               [Age at enrollment <= 0.1038] n=63
+                  --> Dropout (n=26, impureza=0.204)
+                  --> Dropout (n=37, impureza=0.000)
+               --> Dropout (n=6, impureza=0.500)
+      [taxa_aprovacao_1sem <= 0.3875] n=1020
+         [Course_171 <= 0.5] n=533
+            [Curricular units 1st sem (evaluations) <= 0.1889] n=405
+               [Curricular units 1st sem (without evaluations) <= 0.375] n=249
+                  --> Dropout (n=243, impureza=0.130)
+                  --> Enrolled (n=6, impureza=0.611)
+               [Age at enrollment <= 0.08491] n=156
+                  --> Dropout (n=77, impureza=0.507)
+                  --> Dropout (n=79, impureza=0.245)
+            [Admission grade <= 0.4321] n=128
+               [Application order <= 0.1667] n=66
+                  --> Dropout (n=44, impureza=0.525)
+                  --> Graduate (n=22, impureza=0.616)
+               [Unemployment rate <= 0.8256] n=62
+                  --> Graduate (n=52, impureza=0.430)
+                  --> Dropout (n=10, impureza=0.660)
+         [Age at enrollment <= 0.1226] n=487
+            [Mother's occupation_outros <= 0.5] n=328
+               [delta_nota_ingresso <= 0.4682] n=317
+                  --> Enrolled (n=110, impureza=0.574)
+                  --> Dropout (n=207, impureza=0.652)
+               --> Enrolled (n=11, impureza=0.000)
+            [Curricular units 1st sem (grade) <= 0.0006787] n=159
+               [Scholarship holder <= 0.5] n=127
+                  --> Dropout (n=114, impureza=0.480)
+                  --> Graduate (n=13, impureza=0.639)
+               [Curricular units 1st sem (approved) <= 0.1346] n=32
+                  --> Dropout (n=10, impureza=0.460)
+                  --> Enrolled (n=22, impureza=0.558)
+   [taxa_aprovacao_1sem <= 0.8397] n=2196
+      [Tuition fees up to date <= 0.5] n=441
+         [GDP <= 0.788] n=39
+            [Course_9238 <= 0.5] n=28
+               [Mother's qualification <= 0.03488] n=22
+                  --> Dropout (n=5, impureza=0.480)
+                  --> Dropout (n=17, impureza=0.000)
+               --> Dropout (n=6, impureza=0.500)
+            [Application mode_17 <= 0.5] n=11
+               --> Dropout (n=6, impureza=0.444)
+               --> Enrolled (n=5, impureza=0.000)
+         [Scholarship holder <= 0.5] n=402
+            [Course_9853 <= 0.5] n=305
+               [Course_9119 <= 0.5] n=272
+                  --> Graduate (n=257, impureza=0.616)
+                  --> Enrolled (n=15, impureza=0.240)
+               [Mother's qualification <= 0.593] n=33
+                  --> Enrolled (n=22, impureza=0.483)
+                  --> Dropout (n=11, impureza=0.298)
+            [Unemployment rate <= 0.1802] n=97
+               [Age at enrollment <= 0.04717] n=17
+                  --> Enrolled (n=8, impureza=0.594)
+                  --> Graduate (n=9, impureza=0.494)
+               [GDP <= 0.788] n=80
+                  --> Graduate (n=73, impureza=0.265)
+                  --> Graduate (n=7, impureza=0.653)
+      [Tuition fees up to date <= 0.5] n=1755
+         [GDP <= 0.788] n=57
+            [Previous qualification (grade) <= 0.4474] n=30
+               --> Dropout (n=17, impureza=0.000)
+               [Unemployment rate <= 0.6628] n=13
+                  --> Dropout (n=8, impureza=0.469)
+                  --> Graduate (n=5, impureza=0.000)
+            [Debtor <= 0.5] n=27
+               [delta_nota_ingresso <= 0.5086] n=15
+                  --> Enrolled (n=9, impureza=0.346)
+                  --> Graduate (n=6, impureza=0.444)
+               [Previous qualification (grade) <= 0.3847] n=12
+                  --> Dropout (n=6, impureza=0.278)
+                  --> Enrolled (n=6, impureza=0.500)
+         [Curricular units 1st sem (grade) <= 0.0006378] n=1698
+            [Course_9119 <= 0.5] n=315
+               [delta_nota_ingresso <= 0.3869] n=308
+                  --> Enrolled (n=37, impureza=0.619)
+                  --> Graduate (n=271, impureza=0.437)
+               --> Enrolled (n=7, impureza=0.000)
+            [Course_9119 <= 0.5] n=1383
+               [Curricular units 1st sem (evaluations) <= 0.1889] n=1362
+                  --> Graduate (n=1042, impureza=0.225)
+                  --> Graduate (n=320, impureza=0.357)
+               [Mother's occupation_9 <= 0.5] n=21
+                  --> Graduate (n=15, impureza=0.587)
+                  --> Enrolled (n=6, impureza=0.444)
